@@ -1,0 +1,67 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### JRebel ###
+rebel.xml
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+composer.phar
+composer.lock
+.env.*
+.env
+
+#windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Build Tools
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+.svn/
+.git/
+dump.rdb
+config/*.mmdb
+config/*.DAT
+logs/
+transaction-logs/
+.flattened-pom.xml
+
+# AI
+.serena
+.claude
+.trae
+.cursor
+.mcp.json

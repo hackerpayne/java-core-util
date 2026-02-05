@@ -1,0 +1,103 @@
+package com.qyhstech.core.sys;
+
+import cn.hutool.core.io.IoUtil;
+import com.qyhstech.core.io.QyIoUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 不阻塞的Process处理
+ * process = Runtime.getRuntime().exec(new String[]{"python", FileUtil.getFile(Utils.CurrentDir, "data", "snownlp_test.py").getAbsolutePath(), Base64Util.encode(content)});
+ * processExecutor = new ProcessExecutor(process);
+ * processExecutor.execute();
+ */
+@Slf4j
+public class ProcessExecutor {
+
+    private Process p;
+    private List<String> outputList;
+    private List<String> errorOutputList;
+
+    /**
+     * 构造函数
+     *
+     * @param p
+     * @throws IOException
+     */
+    public ProcessExecutor(Process p) throws IOException {
+        if (null == p) {
+            throw new IOException("the provided Process is null");
+        }
+        this.p = p;
+    }
+
+    /**
+     * 获取OutPut的输出列表
+     *
+     * @return
+     */
+    public List<String> getOutputList() {
+        return this.outputList;
+    }
+
+    public List<String> getErrorOutputList() {
+        return this.errorOutputList;
+    }
+
+    /**
+     * 执行命令任务
+     *
+     * @return
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    public int execute() throws InterruptedException, IOException {
+        int rs = 0;
+        ProcessOutputThread outputThread = new ProcessOutputThread(this.p.getInputStream());
+        ProcessOutputThread errorOutputThread = new ProcessOutputThread(this.p.getErrorStream());
+        outputThread.start();
+        errorOutputThread.start();
+        rs = p.waitFor();
+        outputThread.join();
+        errorOutputThread.join();
+        this.outputList = outputThread.getOutputList();
+        this.errorOutputList = errorOutputThread.getOutputList();
+        return rs;
+    }
+
+    /**
+     * 处理输出流
+     */
+    class ProcessOutputThread extends Thread {
+        private InputStream is;
+        private List<String> outputList;
+
+        public ProcessOutputThread(InputStream is) throws IOException {
+            if (null == is) {
+                throw new IOException("the provided InputStream is null");
+            }
+            this.is = is;
+            this.outputList = new ArrayList<String>();
+        }
+
+        public List<String> getOutputList() {
+            return this.outputList;
+        }
+
+        @Override
+        public void run() {
+            try {
+                this.outputList.add(QyIoUtil.inputStreamToStr(this.is, "UTF-8"));
+            } catch (IOException e) {
+                log.error(e.getMessage());
+                throw new RuntimeException(e);
+            } finally {
+                IoUtil.close(this.is);
+            }
+        }
+    }
+}

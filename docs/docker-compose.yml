@@ -1,0 +1,145 @@
+#version: '3.8'
+services:
+#Himall
+  himall-gw:
+    restart: on-failure
+    container_name: himall-gw
+    #image: swr.cn-south-1.myhuaweicloud.com/cloud-himall/himall-gw:${himallgw}
+    build:
+        context: .
+        dockerfile: ./himall-gw/Dockerfile
+    mem_limit: 2048m
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9080:8080
+    environment:
+      - STAGE=prod
+        #- APP_NAME=himall-gw
+        #- "JAVA_OPTS=-server -Xms256m -Xmx1024m"
+      - NACOS_SERVER=${Host_Machine}:8848
+      - NACOS_USERNAME=nacos
+      - NACOS_PASSWORD=nacos
+      - NACOS_NAMESPACE=prod
+    volumes:
+      - ./logs:/log
+
+
+  himall-base:
+    restart: on-failure
+    container_name: himall-base
+    #image: swr.cn-south-1.myhuaweicloud.com/cloud-himall/himall-base:${himallbase}
+    build:
+        context: .
+        dockerfile: ./himall-base/Dockerfile
+    mem_limit: 2048m
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9081:8080
+    environment:
+      - STAGE=prod
+      #- "JAVA_OPTS=-server -Xms256m -Xmx1024m"
+      - NACOS_SERVER=${Host_Machine}:8848
+      - NACOS_USERNAME=nacos
+      - NACOS_PASSWORD=nacos
+      - NACOS_NAMESPACE=prod
+    volumes:
+      - ./logs:/log
+   
+  himall-report:
+    restart: on-failure
+    container_name: himall-report
+    #image: swr.cn-south-1.myhuaweicloud.com/cloud-himall/himall-report:${himallreport}
+    build:
+        context: .
+        dockerfile: ./himall-report/Dockerfile
+    mem_limit: 2048m
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9082:8080
+    environment:
+      - STAGE=prod
+      #- "JAVA_OPTS=-server -Xms256m -Xmx1024m"
+      - NACOS_SERVER=${Host_Machine}:8848
+      - NACOS_USERNAME=nacos
+      - NACOS_PASSWORD=nacos
+      - NACOS_NAMESPACE=prod
+    volumes:
+        - ./logs:/log
+
+  himall-trade:
+    restart: on-failure
+    container_name: himall-trade
+    #image: swr.cn-south-1.myhuaweicloud.com/cloud-himall/himall-trade:${himalltrade}
+    build:
+        context: .
+        dockerfile: ./himall-trade/Dockerfile
+    mem_limit: 2048m
+    #privileged: true     #特权模式
+    #depends_on:          #依赖服务
+      #- redis
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9083:8080
+    environment:
+      - STAGE=prod
+      #- "JAVA_OPTS=-server -Xms256m -Xmx1024m"
+      - NACOS_SERVER=${Host_Machine}:8848
+      - NACOS_USERNAME=nacos
+      - NACOS_PASSWORD=nacos
+      - NACOS_NAMESPACE=prod
+    volumes:
+      - ./logs:/log
+
+  himall-order:
+    restart: on-failure
+    container_name: himall-order
+    image: swr.cn-south-1.myhuaweicloud.com/cloud-himall/himall-order:${himallorder}
+    build:
+        context: .
+        dockerfile: ./himall-order/Dockerfile
+    mem_limit: 2048m
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9084:8080
+    environment:
+      - STAGE=prod
+      #- "JAVA_OPTS=-server -Xms256m -Xmx1024m"
+      - NACOS_SERVER=${Host_Machine}:8848
+      - NACOS_USERNAME=nacos
+      - NACOS_PASSWORD=nacos
+      - NACOS_NAMESPACE=prod
+    volumes:
+      - ./logs:/log  
+
+
+#nginx
+  nginx:
+    image: nginx:1.24.0-alpine
+    container_name: nginx
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./logs:/var/log/nginx
+      - ./nginx/wwwroot:/var/www/
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf

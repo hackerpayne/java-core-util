@@ -1,0 +1,135 @@
+package com.qyhstech.core.http;
+
+import cn.hutool.core.util.StrUtil;
+import com.qyhstech.core.domain.dto.ModelUrl;
+import lombok.extern.slf4j.Slf4j;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.util.Map;
+
+/**
+ * URL解析器,解析出URL,请求字符串和片段等信息
+ * Created by Kyle on 16/8/23.
+ */
+@Slf4j
+public class QyUrlParser {
+
+    private URI uri;
+
+    private String defaultCharset = "utf-8";
+
+    /**
+     * 构造函数
+     *
+     * @param url URL地址
+     */
+    public QyUrlParser(String url) {
+        this(url, "");
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param url     URL地址
+     * @param charset 编码
+     */
+    public QyUrlParser(String url, String charset) {
+
+        try {
+
+            if (StrUtil.isNotEmpty(charset)) {
+                this.defaultCharset = charset;
+            }
+
+            this.uri = new URI(URLDecoder.decode(url, this.defaultCharset));
+
+        } catch (Exception e) {
+            this.uri = null;
+            log.error("URLParser 异常", e);
+        }
+    }
+
+    /**
+     * 获取不带请求字符串和fragment的干净URL
+     *
+     * @return
+     */
+    public String getCleanUrl() {
+        try {
+
+            return new URI(this.uri.getScheme(), this.uri.getAuthority(), this.uri.getPath(),
+                    null, // 忽略查询字符串
+                    null // 忽略fragement片段
+            ).toString();
+
+        } catch (URISyntaxException e) {
+            log.error("getCleanUrl trigger error ", e);
+        }
+
+        return "";
+    }
+
+    /**
+     * 获取Path路径部份
+     *
+     * @return
+     */
+    public String getPath() {
+        return this.uri.getPath();
+    }
+
+    /**
+     * 获取URL请求字符串信息
+     *
+     * @return
+     */
+    public String getQueryStr() {
+        return this.uri.getQuery();
+    }
+
+    /**
+     * 获取URL中的参数信息
+     *
+     * @param params
+     * @return
+     */
+    public String getParam(String... params) {
+        return QyParam.getUrlPara(this.uri.toString(), params);
+    }
+
+    /**
+     * 获取URL请求片段信息Fragment
+     *
+     * @return
+     */
+    public String getFragment() {
+        return this.uri.getFragment();
+    }
+
+    /**
+     * 解析出url参数中的键值对
+     * 如 "index.jsp?Action=del&id=123"，解析出Action:del,id:123存入map中
+     *
+     * @return url请求参数部分
+     */
+    public Map<String, String> parseQuery() {
+        return QyParam.getUrlPara(this.getQueryStr());
+    }
+
+    /**
+     * URL解析到Model实体类里面
+     *
+     * @return
+     */
+    public ModelUrl parseUrlModel() {
+        ModelUrl model = new ModelUrl(this.uri.toString());
+        model.setCleanUrl(this.getCleanUrl());
+        model.setQueryStr(this.getQueryStr());
+        model.setFragment(this.getFragment());
+        model.setQueryMap(this.parseQuery());
+        return model;
+    }
+
+}

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.qyhstech</groupId>
+    <packaging>pom</packaging>
+    <artifactId>QyCore</artifactId>
+    <name>${project.artifactId}</name>
+    <version>23.6.5</version>
+
+    <description>QYun Framework</description>
+    <modules>
+        <module>qy-bom</module>
+        <module>qy-bom-spring</module>
+<!--        <module>qy-bom-cloud</module>-->
+
+        <module>qy-core</module>
+        <module>qy-spring</module>
+    </modules>
+
+    <url>https://www.qyhstech.com</url>
+
+    <properties>
+        <revision>25.11.22</revision>
+
+        <!-- 统一设置本框架的版本号-->
+        <qy.version>23.6.5</qy.version>
+
+        <!-- JDK基础配置 -->
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- 插件编译配置-->
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler-plugin.version>3.14.0</maven.compiler-plugin.version>
+        <maven.jar-plugin.version>3.4.2</maven.jar-plugin.version>
+        <maven.site-plugin.version>3.11.0</maven.site-plugin.version>
+        <maven.source-plugin.version>3.2.1</maven.source-plugin.version>
+        <maven.gpg-plugin.version>3.0.1</maven.gpg-plugin.version>
+        <maven.javadoc-plugin.version>3.3.2</maven.javadoc-plugin.version>
+        <nexus.staging-maven-plugin.version>1.6.12</nexus.staging-maven-plugin.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <flatten-maven-plugin.version>1.3.0</flatten-maven-plugin.version>
+
+        <!-- Spring框架配置 -->
+        <spring.boot.version>3.5.4</spring.boot.version>
+
+        <lombok.version>1.18.40</lombok.version>
+        <mapstruct.version>1.6.0</mapstruct.version>
+        <mapstruct-plus.version>1.5.0</mapstruct-plus.version>
+
+        <!-- 打包默认跳过测试 -->
+        <skipTests>true</skipTests>
+    </properties>
+
+    <!-- 以下依赖 全局所有的模块都会引入  -->
+    <dependencies>
+
+        <!--Lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.linpeilie</groupId>
+            <artifactId>mapstruct-plus</artifactId>
+            <version>${mapstruct-plus.version}</version>
+        </dependency>
+
+        <!-- Junit 测试引用包 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 框架核心 -->
+            <dependency>
+                <groupId>com.qyhstech</groupId>
+                <artifactId>qy-bom</artifactId>
+                <version>${qy.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 框架核心 -->
+            <dependency>
+                <groupId>com.qyhstech</groupId>
+                <artifactId>qy-bom-spring</artifactId>
+                <version>${qy.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <defaultGoal>compile</defaultGoal>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <!-- 排除字体文件过滤 -->
+                <excludes>
+                    <exclude>fonts/*.ttc</exclude>
+                    <exclude>fonts/*.ttf</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <!--pluginManagement一般是用来在父POM中定义，子模块中可以不用再定义-->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <!-- 一般而言，target与source是保持一致的，但是，有时候为了让程序能在其他版本的jdk中运行(对于低版本目标jdk，源代码中需要没有使用低版本jdk中不支持的语法)，会存在target不同于source的情况 -->
+                        <compilerVersion>${java.version}</compilerVersion>
+                        <fork>true</fork><!-- 要使compilerVersion标签生效，还需要将fork设为true，用于明确表示编译版本配置的可用 -->
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${mapstruct.version}</version>
+                            </path>
+                            <path>
+                                <groupId>io.github.linpeilie</groupId>
+                                <artifactId>mapstruct-plus-processor</artifactId>
+                                <version>${mapstruct-plus.version}</version>
+                            </path>
+
+                        </annotationProcessorPaths>
+                        <verbose>true</verbose>
+                    </configuration>
+                </plugin>
+
+                <!-- 单元测试使用 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <argLine>-Dfile.encoding=UTF-8</argLine>
+                        <!-- 根据打包环境执行对应的@Tag测试方法 -->
+                        <!-- 排除标签 -->
+                        <excludedGroups>exclude</excludedGroups>
+                    </configuration>
+                </plugin>
+
+                <!-- Docker布署插件 -->
+                <!--<plugin>-->
+                <!--<groupId>com.spotify</groupId>-->
+                <!--<artifactId>docker-maven-plugin</artifactId>-->
+                <!--</plugin>-->
+
+                <!--                <plugin>-->
+                <!--                    <groupId>org.apache.maven.plugins</groupId>-->
+                <!--                    <artifactId>maven-javadoc-plugin</artifactId>-->
+                <!--                    <version>2.10.4</version>-->
+                <!--                    <configuration>-->
+                <!--                        <aggregate>true</aggregate>-->
+                <!--                    </configuration>-->
+                <!--                </plugin>-->
+
+                <!--                <plugin>-->
+                <!--                    <groupId>org.codehaus.mojo</groupId>-->
+                <!--                    <artifactId>flatten-maven-plugin</artifactId>-->
+                <!--                    <version>1.5.0</version>-->
+                <!--                    <executions>-->
+                <!--                        <execution>-->
+                <!--                            <id>flatten</id>-->
+                <!--                            <phase>process-resources</phase>-->
+                <!--                            <goals>-->
+                <!--                                <goal>flatten</goal>-->
+                <!--                            </goals>-->
+                <!--                            <configuration>-->
+                <!--                                <updatePomFile>true</updatePomFile>-->
+                <!--                                <flattenMode>resolveCiFriendliesOnly</flattenMode>-->
+                <!--                            </configuration>-->
+                <!--                        </execution>-->
+                <!--                        <execution>-->
+                <!--                            <id>flatten.clean</id>-->
+                <!--                            <phase>clean</phase>-->
+                <!--                            <goals>-->
+                <!--                                <goal>clean</goal>-->
+                <!--                            </goals>-->
+                <!--                        </execution>-->
+                <!--                    </executions>-->
+                <!--                    <inherited>true</inherited>-->
+                <!--                    <configuration>-->
+                <!--                        <updatePomFile>true</updatePomFile>-->
+                <!--                        <flattenMode>resolveCiFriendliesOnly</flattenMode>-->
+                <!--                    </configuration>-->
+                <!--                </plugin>-->
+
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+    <repositories>
+        <repository>
+            <id>public</id>
+            <name>huawei nexus</name>
+            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>public</id>
+            <name>huawei nexus</name>
+            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>

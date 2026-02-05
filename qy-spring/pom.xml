@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.qyhstech</groupId>
+        <artifactId>QyCore</artifactId>
+        <version>23.6.5</version>
+    </parent>
+
+    <artifactId>qy-spring</artifactId>
+    <description>Spring核心类</description>
+    <packaging>jar</packaging>
+    <version>23.6.5</version>
+
+    <properties>
+        <qy.version>23.6.5</qy.version>
+
+        <!-- JDK基础配置 -->
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- 打包相关的配置 -->
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+
+        <!-- 辅助工具版本号-->
+        <lombok.version>1.18.30</lombok.version>
+
+        <!--        &lt;!&ndash; Spring框架配置 &ndash;&gt;-->
+        <!--        <spring.boot.version>3.2.0</spring.boot.version>-->
+        <!--        <spring.cloud.version>2022.0.4</spring.cloud.version>-->
+        <!--        <spring.alibaba.version>2022.0.0.0</spring.alibaba.version>-->
+        <!--        <spring.admin.version>2.7.10</spring.admin.version>-->
+        <!--        <nacos.client.version>2.2.4</nacos.client.version>-->
+
+        <!--        &lt;!&ndash; Apache Dubbo &ndash;&gt;-->
+        <!--        <dubbo.version>3.0.13</dubbo.version>-->
+
+        <!-- API辅助生成工具版本号-->
+<!--        <knife4j.version>4.4.0</knife4j.version>-->
+
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.qyhstech</groupId>
+            <artifactId>qy-core</artifactId>
+            <version>${qy.version}</version>
+        </dependency>
+
+        <!-- Spring框架基本的核心工具 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+
+        <!-- SpringWeb模块 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework</groupId>-->
+        <!--            <artifactId>spring-tx</artifactId>-->
+        <!--        </dependency>-->
+
+        <!--        &lt;!&ndash; spring security 安全认证 &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-security</artifactId>-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!--Lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 网络操作类 -->
+        <!--        <dependency>-->
+        <!--            <groupId>commons-net</groupId>-->
+        <!--            <artifactId>commons-net</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- 以下依赖已在qy-core中定义，通过依赖qy-core获得 -->
+        <!-- httpclient5, hutool-http, jsoup 已在qy-core中定义 -->
+        
+        <!-- qy-spring模块特有的依赖，代码中直接使用 -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <optional>true</optional>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2-extension-spring6</artifactId>
+            <optional>true</optional>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <optional>true</optional>
+        </dependency>
+        
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-http</artifactId>
+            <optional>true</optional>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+        </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>com.mysql</groupId>-->
+        <!--            <artifactId>mysql-connector-j</artifactId>-->
+        <!--        </dependency>-->
+
+        <!--        &lt;!&ndash; MyBatis-Plus使用 &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.baomidou</groupId>-->
+        <!--            <artifactId>mybatis-plus</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- mybatis-plus-core, jjwt相关依赖, hibernate-validator, transmittable-thread-local, mapstruct 已在qy-core中定义 -->
+
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- mapstruct-plus, slf4j-api 已在qy-core中定义 -->
+
+        <!-- logback日志包 -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 使用QingFrameWork框架核心-->
+            <dependency>
+                <groupId>com.qyhstech</groupId>
+                <artifactId>qy-bom</artifactId>
+                <version>${qy.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.qyhstech</groupId>
+                <artifactId>qy-bom-spring</artifactId>
+                <version>${qy.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--            <dependency>-->
+            <!--                <groupId>org.springframework.boot</groupId>-->
+            <!--                <artifactId>spring-boot-dependencies</artifactId>-->
+            <!--                <version>${spring.boot.version}</version>-->
+            <!--                <type>pom</type>-->
+            <!--                <scope>import</scope>-->
+            <!--            </dependency>-->
+
+            <!--            &lt;!&ndash; 官方 https://spring.io/projects/spring-cloud https://github.com/spring-projects/spring-cloud &ndash;&gt;-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.springframework.cloud</groupId>-->
+            <!--                <artifactId>spring-cloud-dependencies</artifactId>-->
+            <!--                <version>${spring.cloud.version}</version>-->
+            <!--                <type>pom</type>-->
+            <!--                <scope>import</scope>-->
+            <!--            </dependency>-->
+
+            <!--            &lt;!&ndash; spring cloud alibaba 依赖 &ndash;&gt;-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.alibaba.cloud</groupId>-->
+            <!--                <artifactId>spring-cloud-alibaba-commons</artifactId>-->
+            <!--                <version>${spring.alibaba.version}</version>-->
+            <!--                <type>pom</type>-->
+            <!--                <scope>import</scope>-->
+            <!--            </dependency>-->
+
+            <!--            &lt;!&ndash; Swagger API管理工具 &ndash;&gt;-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.github.xiaoymin</groupId>-->
+            <!--                <artifactId>knife4j-dependencies</artifactId>-->
+            <!--                <version>${knife4j.version}</version>-->
+            <!--                <type>pom</type>-->
+            <!--                <scope>import</scope>-->
+            <!--            </dependency>-->
+
+        </dependencies>
+    </dependencyManagement>
+
+</project>

@@ -1,0 +1,5 @@
+com.qyhstech.spring.configuration.QySpringConfiguration
+com.qyhstech.spring.configuration.JacksonConfig
+com.qyhstech.spring.configuration.FilterConfig
+com.qyhstech.spring.configuration.I18nConfig
+com.qyhstech.spring.configuration.CorsAutoConfiguration
