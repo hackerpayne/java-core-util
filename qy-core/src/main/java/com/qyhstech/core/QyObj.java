@@ -4,15 +4,29 @@ import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class QyObj extends ObjectUtil {
 
     /**
+     * 不为空时赋值，例 ：
+     * setIfNotNull(taskConfig.getBaseCredit(), projectConfig::setBaseCredits);
+     * @param value
+     * @param setter
+     * @param <T>
+     */
+    public static <T> void setIfNotNull(T value, Consumer<T> setter) {
+        if (value != null) {
+            setter.accept(value);
+        }
+    }
+
+    /**
      * 如果对象不为空，则获取对象中的某个字段 ObjectUtils.notNullGetter(user, User::getName);
      *
-     * @param obj 对象
+     * @param obj  对象
      * @param func 获取方法
      * @return 对象字段
      */

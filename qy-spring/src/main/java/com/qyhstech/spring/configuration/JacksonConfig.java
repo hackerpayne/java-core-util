@@ -14,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.converter.json.SpringHandlerInstantiator;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,7 +34,7 @@ import java.util.TimeZone;
 public class JacksonConfig {
 
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer customizer() {
+    public Jackson2ObjectMapperBuilderCustomizer customizer(ApplicationContext ctx) {
         return builder -> {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -57,6 +59,12 @@ public class JacksonConfig {
             builder.serializerByType(BigInteger.class, new LongToStringSerializer());
             builder.serializerByType(Long.class, new LongToStringSerializer());
             builder.timeZone(TimeZone.getDefault());
+
+            // 尝试从Spring容器中读取转换实例
+            builder.postConfigurer(mapper ->
+                    mapper.setHandlerInstantiator(
+                            new SpringHandlerInstantiator(ctx.getAutowireCapableBeanFactory())
+                    ));
             log.info("<<<<<<<<<<<<<<< 【QyCore】初始化 Jackson  >>>>>>>>>>>>>>>>>>");
         };
     }
